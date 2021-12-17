@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>w6指令查询平台</title>
+    <link rel="stylesheet" href="./style/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="container-blur">
+        <div class="header">
+          <div class="hd-left">
+            <div class="icon-area">
+              <div class="icon-img"></div>
+            </div>
+            <div class="icon-text">
+              <span>W6 Ats</span>
+            </div>
+          </div>
+          <div class="hd-middle">
+            <div class="search">
+              <form class="search-form">
+                <input
+                  id="search_input"
+                  class="search-input"
+                  type="search"
+                  placeholder="Search..."
+                  name="keyWord"
+                />
+                <button id="search_btn" class="search-btn"></button>
+                <label id="search_label" class="data-list" for="ats">
+                  <!-- <div class="list">1</div> -->
+                </label>
+              </form>
+            </div>
+            <div class="btns">
+              <button class="btn-1">
+                <div
+                  class="btn-img"
+                  style="background: url('./src/assets/time.png') no-repeat center center;background-size: 90% 90%;"
+                ></div>
+              </button>
+              <button class="btn-1">
+                <div
+                  class="btn-img"
+                  style="background: url('./src/assets/notice_1.png') no-repeat center center;background-size: 90% 90%;"
+                ></div>
+              </button>
+              <button class="btn-1">
+                <div
+                  class="btn-img"
+                  style="background: url('./src/assets/share.png') no-repeat center center;background-size: 90% 90%;"
+                ></div>
+              </button>
+            </div>
+            <!-- <div class="title-top">w6 指令查询平台</div>
+          <div class="title-bottom">SEARCH FOR ATs</div> -->
+          </div>
+          <div class="hd-right">
+            <div class="total-text">共收录： <span id="at_num">{未知}</span> 条指令</div>
+          </div>
+        </div>
+        <div class="content">
+          <div class="content-middle">
+            <ul id="at_list_ul">
+            </ul>
+          </div>
+        </div>
+        </div>
+        <div class="footer"></div>
+      </div>
+    </div>
+    <script type="module" src="./scripts/index.js"></script>
+  </body>
+</html>
