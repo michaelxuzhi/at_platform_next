@@ -1,8 +1,9 @@
 // 新格式
 let guide = {
   name: '新手指引',
-  detail: [
-    {
+  id: 'guide',
+  detail: {
+    get: {
       parentName: 'guide',
       name: 'get',
       desc: '占领本州所有npc城池',
@@ -15,7 +16,7 @@ let guide = {
       ],
       example: 'at.guide.get()',
     },
-    {
+    set: {
       parentName: 'guide',
       name: 'set',
       desc: '占领本州所有npc城池',
@@ -28,23 +29,17 @@ let guide = {
       ],
       example: 'at.guide.set()',
     },
-  ],
-  at_arr: function() {
-    let desc = {};
-    for (let i = 0; i < this.detail.length; i++) {
-      desc[this.detail[i]['name']] = this.detail[i]['desc'];
-    }
-    return desc;
   },
   at_length: function() {
-    return this.detail.length;
+    return [...Object.keys(this.detail)].length;
   },
 };
 
 let guild = {
   name: '国家',
-  detail: [
-    {
+  id: 'guild',
+  detail: {
+    att_army_name: {
       parentName: 'guild',
       name: 'att_army_name',
       desc: '攻击方部队名称',
@@ -57,7 +52,7 @@ let guild = {
       ],
       example: 'at.guild.get()',
     },
-    {
+    occupy_grid: {
       parentName: 'guild',
       name: 'occupy_grid',
       desc: '占领本州所有npc城池',
@@ -70,7 +65,7 @@ let guild = {
       ],
       example: 'at.guild.get()',
     },
-    {
+    occupy_map: {
       parentName: 'guild',
       name: 'occupy_map',
       desc: '占领本州地图资源',
@@ -83,7 +78,7 @@ let guild = {
       ],
       example: 'at.guild.occupy_map()',
     },
-    {
+    create: {
       parentName: 'guild',
       name: 'create',
       desc: '创建国家',
@@ -96,7 +91,7 @@ let guild = {
       ],
       example: 'at.guild.get()',
     },
-    {
+    full_account: {
       parentName: 'guild',
       name: 'full_account',
       desc: '满级号',
@@ -109,22 +104,16 @@ let guild = {
       ],
       example: 'at.guild.set()',
     },
-  ],
-  at_arr: function() {
-    let desc = {};
-    for (let i = 0; i < this.detail.length; i++) {
-      desc[this.detail[i]['name']] = this.detail[i]['desc'];
-    }
-    return desc;
   },
   at_length: function() {
-    return this.detail.length;
+    return [...Object.keys(this.detail)].length;
   },
 };
 let army = {
   name: '部队',
-  detail: [
-    {
+  id: 'army',
+  detail: {
+    get_time: {
       parentName: 'army',
       name: 'get_time',
       desc: '占领本州所有npc城池',
@@ -137,7 +126,7 @@ let army = {
       ],
       example: 'at.army.get()',
     },
-    {
+    occupy_city: {
       parentName: 'army',
       name: 'occupy_city',
       desc: '占领本州所有npc城池',
@@ -146,36 +135,30 @@ let army = {
       params: [{ params1: '占城1' }, { params2: '占城二' }, { params3: '占城三' }],
       example: 'at.army.set()',
     },
-  ],
-  at_arr: function() {
-    let desc = {};
-    for (let i = 0; i < this.detail.length; i++) {
-      desc[this.detail[i]['name']] = this.detail[i]['desc'];
-    }
-    return desc;
   },
   at_length: function() {
-    return this.detail.length;
+    return [...Object.keys(this.detail)].length;
   },
 };
 
-let other = {
+let at = {
   name: '其他',
-  detail: [
-    {
+  id: 'at',
+  detail: {
+    get_time_other: {
       parentName: 'at',
-      name: 'get_time',
+      name: 'get_time_other',
       desc: '获取时间',
       author: 'xuzhi',
       time: '20211025',
-      // params: [
-      //   { params1: '示例参数一' },
-      //   { params2: '示例参数二' },
-      //   { params3: '示例参数三' },
-      // ],
+      params: [
+        { params1: '示例参数一' },
+        { params2: '示例参数二' },
+        { params3: '示例参数三' },
+      ],
       example: 'at.get()',
     },
-    {
+    set_res: {
       parentName: 'at',
       name: 'set_res',
       desc: '设置资源数量',
@@ -184,17 +167,10 @@ let other = {
       params: [{ params1: '资源名称' }, { params2: '资源数量' }],
       example: 'at.set()',
     },
-  ],
-  at_arr: function() {
-    let desc = {};
-    for (let i = 0; i < this.detail.length; i++) {
-      desc[this.detail[i]['name']] = this.detail[i]['desc'];
-    }
-    return desc;
   },
   at_length: function() {
-    return this.detail.length;
+    return [...Object.keys(this.detail)].length;
   },
 };
 
-export { army, guild, guide, other };
+export { army, guild, guide, at };
