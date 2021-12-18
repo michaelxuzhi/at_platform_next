@@ -44,6 +44,8 @@ let at_child_params_list_ul = $('#at_child_params_list_ul');
 // copy按钮
 let at_btn_copy_short = $('#btn_copy_short');
 let at_btn_copy_long = $('#btn_copy_long');
+// reset按钮
+let reset_btn = $('#btn_reset');
 
 // 指令数量渲染
 function renderAtNum(e) {
@@ -78,6 +80,25 @@ function renderAtInfo(e) {
   // console.log(at_target);
   at_name.innerText = at_target.name;
   at_desc.innerText = at_target.desc;
+  // 指令信息：父级模块名，指令名
+  let atParentName = e.target.ctx.parentName;
+  let atAt = e.target.ctx.name;
+  resetParams();
+  function _init() {
+    // 渲染短指令
+    // console.log(atParentName);
+    // 如果不是at根目录下的，需要字符串拼接
+    let atStr_short = atParentName !== 'at' ? `at.${atParentName}.${atAt}` : `at.${atAt}`;
+    at_short.innerText = atStr_short;
+    // 渲染长指令
+    let atStr_long =
+      atParentName !== 'at'
+        ? `['at','${atParentName}/${atAt}','参数']`
+        : `['at','${atAt}','参数']`;
+    at_long.innerText = atStr_long;
+  }
+  _init();
+
   let paramsList = at_target.params;
   // 先清空
   at_child_params_list_ul.innerHTML = '';
@@ -104,12 +125,11 @@ function renderAtInfo(e) {
     }
     let str = '';
     // let params_list = [];
-    let num = params_inputs.length;
     params_inputs.forEach((input, index) => {
       // console.log(index);
       input.oninput = () => {
         window[`a_${index}`] = input.value;
-        for (let i = 0; i < num; i++) {
+        for (let i = 0; i < params_inputs.length; i++) {
           str += String(window[`a_${i}`]) ? "'" + String(window[`a_${i}`]) + "'," : '空,';
           // params_list.push(String(window[`a_${i}`]) ? String(window[`a_${i}`]) : '空');
         }
@@ -117,6 +137,8 @@ function renderAtInfo(e) {
         at_params_short.innerText = '(' + atParams_long_text + ')';
         // atParams_short.innerText = '(' + params_list + ')';
         at_params_long.style.display = 'none';
+        // console.log(atParams_long_text);
+
         // 渲染长指令
         let atStr_long =
           atParentName !== 'at'
@@ -129,20 +151,6 @@ function renderAtInfo(e) {
       };
     });
   }
-  // 指令信息：父级模块名，指令名
-  let atParentName = e.target.ctx.parentName;
-  let atAt = e.target.ctx.name;
-  // 渲染短指令
-  // console.log(atParentName);
-  // 如果不是at根目录下的，需要字符串拼接
-  let atStr_short = atParentName !== 'at' ? `at.${atParentName}.${atAt}` : `at.${atAt}`;
-  at_short.innerText = atStr_short;
-  // 渲染长指令
-  let atStr_long =
-    atParentName !== 'at'
-      ? `['at','${atParentName}/${atAt}','参数']`
-      : `['at','${atAt}','参数']`;
-  at_long.innerText = atStr_long;
 }
 
 function addGlobalStyle() {
@@ -176,6 +184,7 @@ function eventListener() {
   search_btn.addEventListener('click', resetSearchInput);
   at_btn_copy_short.addEventListener('click', copyShort);
   at_btn_copy_long.addEventListener('click', copyLong);
+  reset_btn.addEventListener('click', resetParams);
 }
 
 function resetSearchInput(e) {
@@ -214,6 +223,24 @@ function copyLong(e) {
   let entireAt_long = `prot_$.doSendToServer_$('game.at_admin','on_com_at',${at_long_ctx})`;
   navigator.clipboard.writeText(entireAt_long);
   alert('复制长指令成功' + '\n' + entireAt_long);
+}
+
+// 指令参数重置方法
+function resetParams(e) {
+  // 指令参数重置
+  // 以通配符的方式，获取所有id以paramsInput为开头的input节点
+  let params_inputs = document.querySelectorAll("input[id^='paramsInput']");
+  if (params_inputs.length == 0) return;
+  // console.log(params_inputs);
+  params_inputs.forEach(function(item) {
+    // 将每个paramsInput的value清空，并重调用onInput方法，更新已经输入的指令参数
+    item.value = '';
+    item.oninput();
+  });
+  at_params_short.innerText = '(参数)';
+  // at_long.innerText = '{prot_$}';
+  at_params_long.innerText = '(参数)';
+  at_params_long.style.display = 'inline-block';
 }
 
 // 开始执行函数
