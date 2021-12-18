@@ -9,11 +9,7 @@ let guide = {
       desc: '占领本州所有npc城池',
       author: 'xuzhi',
       time: '20211025',
-      params: [
-        { params1: '示例参数一' },
-        { params2: '示例参数二' },
-        { params3: '示例参数三' },
-      ],
+      params: [{ params1: '示例参数一' }, { params2: '示例参数二' }],
       example: 'at.guide.get()',
     },
     set: {
@@ -88,6 +84,9 @@ let guild = {
         { params1: '示例参数一' },
         { params2: '示例参数二' },
         { params3: '示例参数三' },
+        { params4: '示例参数四' },
+        { params5: '示例参数五' },
+        { params6: '示例参数六' },
       ],
       example: 'at.guild.get()',
     },

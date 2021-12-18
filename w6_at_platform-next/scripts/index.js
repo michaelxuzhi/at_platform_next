@@ -27,21 +27,11 @@ function total_num(atObj) {
   }
   return num;
 }
-// 获取data下子指令
-// function get_ats(atObj) {
-//   let ats_arr_desc = [];
-//   for (const key in atObj) {
-//     if (Object.hasOwnProperty.call(atObj, key)) {
-//       ats_arr_desc.push(atObj[key].at_arr());
-//     }
-//   }
-//   console.log(ats_arr_desc);
-//   return ats_arr_desc;
-// }
 
 // 全局声明区域
 let at_list_ul = $('#at_list_ul'); // content内容的at_list_ul，at列表
 let search_input = $('#search_input'); // 搜索输入框
+let search_btn = $('#search_btn'); // 重置按钮
 let at_num = $('#at_num'); // 指令数量
 let at_name = $('#at_name'); // 指令名称
 let at_desc = $('#at_desc'); // 指令描述
@@ -72,7 +62,7 @@ function renderAtList(e) {
 
 function listenerAt(e) {
   let at_li_list = $('.list');
-  console.log(at_li_list);
+  // console.log(at_li_list);
   for (const item of at_li_list) {
     // 每个at指令携带信息
     let at_parentName = item.getAttribute('data-parentName');
@@ -89,6 +79,10 @@ function renderAtInfo(e) {
   at_name.innerText = at_target.name;
   at_desc.innerText = at_target.desc;
   let paramsList = at_target.params;
+  // 先清空
+  at_child_params_list_ul.innerHTML = '';
+  // 重置初始指令
+  at_params_long.style.display = 'none';
   if (paramsList) {
     paramsList.forEach((element, params_idx) => {
       let value = Object.values(element);
@@ -112,6 +106,7 @@ function renderAtInfo(e) {
     // let params_list = [];
     let num = params_inputs.length;
     params_inputs.forEach((input, index) => {
+      // console.log(index);
       input.oninput = () => {
         window[`a_${index}`] = input.value;
         for (let i = 0; i < num; i++) {
@@ -150,11 +145,19 @@ function renderAtInfo(e) {
   at_long.innerText = atStr_long;
 }
 
+function addGlobalStyle() {
+  // 用来CSS控制的style插入;
+  let atSearchItemStyle = document.getElementsByTagName('style');
+  if (atSearchItemStyle.length === 0) {
+    atSearchItemStyle = document.createElement('style');
+    document.querySelector('head').appendChild(atSearchItemStyle);
+  }
+  // console.log(atSearchItemStyle);
+  return atSearchItemStyle;
+}
 function searchAt(e) {
   // 搜索框筛选功能的实现
-  // 用来CSS控制的style插入;
-  let atSearchItemStyle = document.createElement('style');
-  document.querySelector('head').appendChild(atSearchItemStyle);
+  let atSearchItemStyle = addGlobalStyle();
   search_input.addEventListener('input', function() {
     let val = this.value.trim().toLowerCase();
     if (val !== '') {
@@ -169,8 +172,33 @@ function searchAt(e) {
   });
 }
 
-at_btn_copy_short.addEventListener('click', copyShort);
-at_btn_copy_long.addEventListener('click', copyLong);
+function eventListener() {
+  search_btn.addEventListener('click', resetSearchInput);
+  at_btn_copy_short.addEventListener('click', copyShort);
+  at_btn_copy_long.addEventListener('click', copyLong);
+}
+
+function resetSearchInput(e) {
+  let atSearchItemStyle = addGlobalStyle()[0];
+  search_input.value = '';
+  atSearchItemStyle.innerHTML = '';
+  // console.log(atSearchItemStyle.innerHTML);
+  // 指令详情的重置
+  // 先清空本身
+  at_child_list_ul.innerHTML = '';
+  // 清空子模块下内容：指令名称+指令描述+指令参数
+  at_name.innerText = '{示例指令名称}';
+  at_desc.innerText = '{示例指令描述}';
+  at_child_params_list_ul.innerHTML = '';
+  // 清空长、短指令内容
+  at_short.innerText = 'at.{模块}{.指令名}';
+  at_long.innerText = '{prot_$}';
+  // 清空指令参数内容
+  at_params_short.innerText = '(参数)';
+  at_params_long.innerText = '(参数)';
+  // 重置初始指令
+  at_params_long.style.display = 'inline-block';
+}
 // 短指令的复制方法
 function copyShort(e) {
   let at_short_ctx = at_short.innerText;
@@ -193,4 +221,5 @@ window.onload = function() {
   renderAtNum();
   renderAtList();
   searchAt();
+  eventListener();
 };
