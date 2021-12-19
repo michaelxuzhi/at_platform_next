@@ -16,17 +16,6 @@ function $(ele_ID) {
 }
 // 全局组合对象区域
 let atObj = { army, guild, guide, at };
-// 获取指令数量
-function total_num(atObj) {
-  let num = 0;
-  for (const key in atObj) {
-    if (Object.hasOwnProperty.call(atObj, key)) {
-      num += atObj[key].at_length();
-      //   console.log(atObj[key]);
-    }
-  }
-  return num;
-}
 
 // 全局声明区域
 let at_list_ul = $('#at_list_ul'); // content内容的at_list_ul，at列表
@@ -47,6 +36,17 @@ let at_btn_copy_long = $('#btn_copy_long');
 // reset按钮
 let reset_btn = $('#btn_reset');
 
+// 获取指令数量
+function total_num(atObj) {
+  let num = 0;
+  for (const key in atObj) {
+    if (Object.hasOwnProperty.call(atObj, key)) {
+      num += atObj[key].at_length();
+      //   console.log(atObj[key]);
+    }
+  }
+  return num;
+}
 // 指令数量渲染
 function renderAtNum(e) {
   at_num.innerHTML = total_num(atObj);
@@ -75,9 +75,7 @@ function listenerAt(e) {
   }
 }
 function renderAtInfo(e) {
-  // console.log(e.target.ctx);
   let at_target = e.target.ctx;
-  // console.log(at_target);
   at_name.innerText = at_target.name;
   at_desc.innerText = at_target.desc;
   // 指令信息：父级模块名，指令名
@@ -137,7 +135,6 @@ function renderAtInfo(e) {
         at_params_short.innerText = '(' + atParams_long_text + ')';
         // atParams_short.innerText = '(' + params_list + ')';
         at_params_long.style.display = 'none';
-        // console.log(atParams_long_text);
 
         // 渲染长指令
         let atStr_long =
@@ -160,7 +157,6 @@ function addGlobalStyle() {
     atSearchItemStyle = document.createElement('style');
     document.querySelector('head').appendChild(atSearchItemStyle);
   }
-  // console.log(atSearchItemStyle);
   return atSearchItemStyle;
 }
 function searchAt(e) {
@@ -191,7 +187,6 @@ function resetSearchInput(e) {
   let atSearchItemStyle = addGlobalStyle()[0];
   search_input.value = '';
   atSearchItemStyle.innerHTML = '';
-  // console.log(atSearchItemStyle.innerHTML);
   // 指令详情的重置
   // 先清空本身
   at_child_list_ul.innerHTML = '';
@@ -231,14 +226,12 @@ function resetParams(e) {
   // 以通配符的方式，获取所有id以paramsInput为开头的input节点
   let params_inputs = document.querySelectorAll("input[id^='paramsInput']");
   if (params_inputs.length == 0) return;
-  // console.log(params_inputs);
   params_inputs.forEach(function(item) {
     // 将每个paramsInput的value清空，并重调用onInput方法，更新已经输入的指令参数
     item.value = '';
     item.oninput();
   });
   at_params_short.innerText = '(参数)';
-  // at_long.innerText = '{prot_$}';
   at_params_long.innerText = '(参数)';
   at_params_long.style.display = 'inline-block';
 }
