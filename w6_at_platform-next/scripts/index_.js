@@ -27,6 +27,8 @@ let at_desc = $('#at_desc'); // 指令描述
 // 指令用法
 let at_short = $('#at_short');
 let at_params_short = $('#at_params_short');
+let at_short_common = $('#at_short_common');
+let at_params_common = $('#at_params_common');
 let at_long = $('#at_long');
 let at_params_long = $('#at_params_long');
 let at_child_params_list_ul = $('#at_child_params_list_ul');
@@ -111,6 +113,12 @@ function renderAtInfo(e) {
     // 如果不是at根目录下的，需要字符串拼接
     let atStr_short = atParentName !== 'at' ? `at.${atParentName}.${atAt}` : `at.${atAt}`;
     at_short.innerText = atStr_short;
+    // 渲染短指令common
+    let atStr_short_common =
+      atParentName !== 'at'
+        ? `at.ff('${atParentName}/${atAt}','参数')`
+        : `at.ff('${atAt}','参数')`;
+    at_short_common.innerText = atStr_short_common;
     // 渲染长指令
     let atStr_long =
       atParentName !== 'at'
@@ -123,7 +131,7 @@ function renderAtInfo(e) {
 
 function eventListener() {
   search_btn.addEventListener('click', resetSearchInput);
-  //   at_btn_copy_short.addEventListener('click', copyShort);
+  at_btn_copy_short.addEventListener('click', copyShort);
   //   at_btn_copy_long.addEventListener('click', copyLong);
   reset_btn.addEventListener('click', resetParams);
 }
@@ -183,12 +191,46 @@ function resetSearchInput(e) {
   at_child_params_list_ul.innerHTML = '';
   // 清空长、短指令内容
   at_short.innerText = 'at.{模块}{.指令名}';
+  at_short_common.innerText = 'at.ff({模块}/{指令名},参数)';
   at_long.innerText = '{prot_$}';
   // 清空指令参数内容
   at_params_short.innerText = '(参数)';
   at_params_long.innerText = '(参数)';
   // 重置初始指令
   at_params_long.style.display = 'inline-block';
+}
+
+// 短指令复制
+function copyShort(e) {
+  let short_text = at_short.innerText;
+  let short_text_param = at_params_short.innerText;
+  let flag = copyText(short_text + short_text_param);
+  alert(flag ? '复制成功' + '\n' + `${short_text + short_text_param}` : '复制失败');
+}
+
+// 兼容版本-copyToClipboard
+function copyText(text) {
+  // console.log(text);
+  let textarea = document.createElement('textarea'); //创建input对象
+  let current_focus = document.activeElement; //当前获得焦点的元素
+  let tool_div = $('#at_copy_tool'); //将文本框插入到工具div之后
+  tool_div.appendChild(textarea); //添加元素
+  textarea.value = text;
+  textarea.focus();
+  if (textarea.setSelectionRange) {
+    textarea.setSelectionRange(0, textarea.value.length); //获取光标起始位置到结束位置
+  } else {
+    textarea.select();
+  }
+  let flag;
+  try {
+    flag = document.execCommand('copy'); //执行复制
+  } catch (error) {
+    flag = false;
+  }
+  tool_div.removeChild(textarea); //删除元素
+  current_focus.focus();
+  return flag;
 }
 
 // 开始执行函数
