@@ -232,9 +232,16 @@ function copyText(text) {
   current_focus.focus();
   return flag;
 }
+function getWindow() {
+  // console.log(window, this);
+  window.getWindow = function() {
+    console.log('打印了window');
+  };
+}
 
 // 开始执行函数
 window.onload = function() {
+  getWindow();
   requestJSON();
   searchAt();
   eventListener();
