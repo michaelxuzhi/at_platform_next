@@ -56,8 +56,8 @@ function requestJSON() {
       console.log('请求失败');
     }
   };
-  // xhr.open('GET', './scripts/data/data_.json', true);
-  xhr.open('GET', 'http://127.0.0.1:8888', true);
+  xhr.open('GET', './scripts/data/data_.json', true);
+  // xhr.open('GET', 'http://127.0.0.1:8888', true);
   xhr.send();
 }
 
@@ -93,11 +93,11 @@ function renderAtList(atObj) {
       at_list_ul.innerHTML += `<li class="list" data-name="${ele.name}" data-parentName="${item.parentName}" data-index="${item.parentName}${ele.name}${ele.desc}" style="visibility: visible;">${ele.name}</li>`;
     });
   });
-  listenerAt(atObj);
+  AttachAtInfo(atObj);
 }
 
 // 指令处理函数，给指令的原型上附加属性
-function listenerAt(atObj) {
+function AttachAtInfo(atObj) {
   let at_li_list = $('.list');
   //   console.log(at_li_list);
   for (const item of at_li_list) {
@@ -106,7 +106,7 @@ function listenerAt(atObj) {
     let at_name = item.getAttribute('data-name');
     let ctx = atObj[at_parentName]['detail'][at_name];
     item.ctx = ctx;
-    item.addEventListener('click', renderAtInfo);
+    // item.addEventListener('click', renderAtInfo);
   }
 }
 
@@ -143,6 +143,8 @@ function renderAtInfo(e) {
 
 function eventListener() {
   search_btn.addEventListener('click', resetSearchInput);
+  // 指令item的点击事件委托，冒泡到父节点ul
+  at_list_ul.addEventListener('click', renderAtInfo);
   at_btn_copy_short.addEventListener('click', copyShort);
   //   at_btn_copy_long.addEventListener('click', copyLong);
   reset_btn.addEventListener('click', resetParams);
