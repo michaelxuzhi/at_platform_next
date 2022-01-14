@@ -37,32 +37,40 @@ let at_btn_copy_short = $('#btn_copy_short');
 let at_btn_copy_long = $('#btn_copy_long');
 // reset按钮
 let reset_btn = $('#btn_reset');
+// 小按钮区域
+let update_at = $('#update_at'); // 更新按钮
 
+let atObjGlobal = null;
+// 定义一个全局变量来存请求到的指令数据
 // 发送请求，获取json格式数据
 function requestJSON() {
+  console.log('requestJSON');
   let xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     // console.log(xhr.readyState);
     if (xhr.readyState === 4 && this.status === 200) {
-      let atObj = JSON.parse(xhr.responseText);
-      //   return atObj;
-      getAtNum(atObj);
-      renderAtList(atObj);
+      atObjGlobal = JSON.parse(xhr.responseText);
+      getAtNum(atObjGlobal);
+      renderAtList(atObjGlobal);
     } else {
       console.log('请求失败');
     }
   };
-  xhr.open('GET', './scripts/data/data_.json', true);
+  // xhr.open('GET', './scripts/data/data_.json', true);
+  xhr.open('GET', 'http://127.0.0.1:8888', true);
   xhr.send();
 }
 
 // 获取指令数量
 function getAtNum(atObj) {
+  console.log(atObj);
   let atNum = 0;
   for (const key in atObj) {
     if (Object.hasOwnProperty.call(atObj, key)) {
       let detail = atObj[key]['detail'];
       atNum += Object.keys(detail).length;
+    } else {
+      renderAtInfo(atNum);
     }
   }
   //   return atNum;
@@ -76,6 +84,10 @@ function renderAtNum(num) {
 
 // 指令列表渲染
 function renderAtList(atObj) {
+  if (!atObj || Object.keys(atObj).length === 0) {
+    at_list_ul.innerHTML = '';
+    return;
+  } // 这里要清掉已有列表
   Object.values(atObj).forEach(item => {
     Object.values(item.detail).forEach(ele => {
       at_list_ul.innerHTML += `<li class="list" data-name="${ele.name}" data-parentName="${item.parentName}" data-index="${item.parentName}${ele.name}${ele.desc}" style="visibility: visible;">${ele.name}</li>`;
@@ -134,6 +146,7 @@ function eventListener() {
   at_btn_copy_short.addEventListener('click', copyShort);
   //   at_btn_copy_long.addEventListener('click', copyLong);
   reset_btn.addEventListener('click', resetParams);
+  update_at.addEventListener('click', updateAtData);
 }
 
 // 指令参数重置方法
@@ -237,6 +250,15 @@ function getWindow() {
   window.getWindow = function() {
     console.log('打印了window');
   };
+}
+
+function updateAtData(e) {
+  console.log('更新数据');
+  atObjGlobal = null;
+  // getAtNum(atObjGlobal);
+  renderAtList(atObjGlobal);
+  resetSearchInput();
+  !atObjGlobal && requestJSON();
 }
 
 // 开始执行函数
