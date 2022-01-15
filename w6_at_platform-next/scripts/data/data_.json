@@ -38,5 +38,6 @@
         "example": "at.guild.get_status()"
       }
     }
-  }
+  },
+  "map": {}
 }

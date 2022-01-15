@@ -17,6 +17,14 @@ function $(ele_ID) {
   }
 }
 
+// getattr的自实现
+function getattr(obj, attr, defalut) {
+  if (Object.hasOwnProperty.call(obj, attr)) {
+    return obj[attr];
+  }
+  return defalut;
+}
+
 // 全局声明区域
 let at_list_ul = $('#at_list_ul'); // content内容的at_list_ul，at列表
 let search_input = $('#search_input'); // 搜索输入框
@@ -40,8 +48,9 @@ let reset_btn = $('#btn_reset');
 // 小按钮区域
 let update_at = $('#update_at'); // 更新按钮
 
-let atObjGlobal = null;
 // 定义一个全局变量来存请求到的指令数据
+let atObjGlobal = null;
+
 // 发送请求，获取json格式数据
 function requestJSON() {
   console.log('requestJSON');
@@ -63,23 +72,25 @@ function requestJSON() {
 
 // 获取指令数量
 function getAtNum(atObj) {
-  console.log(atObj);
+  // console.log(atObj);
   let atNum = 0;
   for (const key in atObj) {
     if (Object.hasOwnProperty.call(atObj, key)) {
-      let detail = atObj[key]['detail'];
-      atNum += Object.keys(detail).length;
-    } else {
-      renderAtInfo(atNum);
+      // let detail = atObj[key]['detail'];
+      // atNum += Object.keys(detail).length;
+      // 缺少指令detail的情况下的健壮性
+      let detail = getattr(atObj[key], 'detail', null);
+      detail && (atNum += Object.keys(detail).length);
     }
   }
-  //   return atNum;
+  // return atNum;
   renderAtNum(atNum);
 }
 
 // 指令数量渲染
 function renderAtNum(num) {
   at_num.innerHTML = num;
+  return;
 }
 
 // 指令列表渲染
@@ -89,9 +100,10 @@ function renderAtList(atObj) {
     return;
   } // 这里要清掉已有列表
   Object.values(atObj).forEach(item => {
-    Object.values(item.detail).forEach(ele => {
-      at_list_ul.innerHTML += `<li class="list" data-name="${ele.name}" data-parentName="${item.parentName}" data-index="${item.parentName}${ele.name}${ele.desc}" style="visibility: visible;">${ele.name}</li>`;
-    });
+    getattr(item, 'detail', null) &&
+      Object.values(item.detail).forEach(ele => {
+        at_list_ul.innerHTML += `<li class="list" data-name="${ele.name}" data-parentName="${item.parentName}" data-index="${item.parentName}${ele.name}${ele.desc}" style="visibility: visible;">${ele.name}</li>`;
+      });
   });
   AttachAtInfo(atObj);
 }
