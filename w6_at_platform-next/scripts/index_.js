@@ -13,7 +13,7 @@ function $(ele_ID) {
     case '.':
       return document.getElementsByClassName(`${real_str}`);
     default:
-      return document.getElementsByTagName(`${ele_ID}`);
+      return document.getElementsByTagName(`${ele_ID}`)[0];
   }
 }
 
@@ -42,6 +42,7 @@ let at_params_long = $('#at_params_long');
 let at_child_params_list_ul = $('#at_child_params_list_ul');
 // copy按钮
 let at_btn_copy_short = $('#btn_copy_short');
+let at_btn_copy_short_common = $('#btn_copy_short_common');
 let at_btn_copy_long = $('#btn_copy_long');
 // reset按钮
 let reset_btn = $('#btn_reset');
@@ -53,7 +54,7 @@ let atObjGlobal = null;
 
 // 发送请求，获取json格式数据
 function requestJSON() {
-  console.log('requestJSON');
+  // console.log('requestJSON');
   let xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     // console.log(xhr.readyState);
@@ -102,14 +103,15 @@ function renderAtList(atObj) {
   Object.values(atObj).forEach(item => {
     getattr(item, 'detail', null) &&
       Object.values(item.detail).forEach(ele => {
-        at_list_ul.innerHTML += `<li class="list" data-name="${ele.name}" data-parentName="${item.parentName}" data-index="${item.parentName}${ele.name}${ele.desc}" style="visibility: visible;">${ele.name}</li>`;
+        at_list_ul.innerHTML += `<li class="list" data-name="${ele.name}" data-parentName="${item.parentName}" data-index="${item.parentName}${ele.name}${ele.desc}" data-desc="${ele.desc}" style="visibility: visible;">${ele.name}</li>`;
       });
   });
-  AttachAtInfo(atObj);
+  // AttachAtInfo(atObj);
 }
 
 // 指令处理函数，给指令的原型上附加属性
 function AttachAtInfo(atObj) {
+  return;
   let at_li_list = $('.list');
   //   console.log(at_li_list);
   for (const item of at_li_list) {
@@ -124,13 +126,18 @@ function AttachAtInfo(atObj) {
 
 // 指令信息渲染
 function renderAtInfo(e) {
+  console.log(e.target.tagName);
+  if (e.target.tagName.toLowerCase() != 'li') return;
   let at_target = e.target.ctx;
-  at_name.innerText = at_target.name;
-  at_desc.innerText = at_target.desc;
+  // at_name.innerText = at_target.name;
+  at_name.innerText = e.target.getAttribute('data-name');
+  // at_desc.innerText = at_target.desc;
+  at_desc.innerText = e.target.getAttribute('data-desc');
   // 指令信息：父级模块名，指令名
   //   let atParentName = e.target.ctx.parentName; // 旧的，ctx中没有parentName
   let atParentName = e.target.getAttribute('data-parentName'); // 新的
-  let atAt = e.target.ctx.name;
+  // let atAt = e.target.ctx.name;
+  let atAt = at_name.innerText;
   resetParams();
   function _init() {
     // 渲染短指令
@@ -158,7 +165,8 @@ function eventListener() {
   // 指令item的点击事件委托，冒泡到父节点ul
   at_list_ul.addEventListener('click', renderAtInfo);
   at_btn_copy_short.addEventListener('click', copyShort);
-  //   at_btn_copy_long.addEventListener('click', copyLong);
+  at_btn_copy_short_common.addEventListener('click', copyShortCommon);
+  at_btn_copy_long.addEventListener('click', copyLong);
   reset_btn.addEventListener('click', resetParams);
   update_at.addEventListener('click', updateAtData);
 }
@@ -185,7 +193,7 @@ function addGlobalStyle() {
   let atSearchItemStyle = document.getElementsByTagName('style');
   if (atSearchItemStyle.length === 0) {
     atSearchItemStyle = document.createElement('style');
-    document.querySelector('head').appendChild(atSearchItemStyle);
+    $('head').appendChild(atSearchItemStyle);
   }
   return atSearchItemStyle;
 }
@@ -234,7 +242,26 @@ function copyShort(e) {
   let flag = copyText(short_text + short_text_param);
   alert(flag ? '复制成功' + '\n' + `${short_text + short_text_param}` : '复制失败');
 }
-
+// 通用短指令复制
+function copyShortCommon(e) {
+  let short_common_text = at_short_common.innerText;
+  let flag = copyText(short_common_text);
+  alert(flag ? '复制成功' + '\n' + `${short_common_text}` : '复制失败');
+}
+// 长指令复制
+function copyLong(e) {
+  let long_text = at_long.innerText;
+  let long_text_param = at_params_long.innerText;
+  let flag = copyText(long_text + long_text_param);
+  alert(
+    flag
+      ? '复制成功' +
+          '\n' +
+          `prot_$.doSendToServer_$('game.at_admin','on_com_at',${long_text +
+            long_text_param})`
+      : '复制失败'
+  );
+}
 // 兼容版本-copyToClipboard
 function copyText(text) {
   // console.log(text);
@@ -272,7 +299,7 @@ function updateAtData(e) {
   // getAtNum(atObjGlobal);
   renderAtList(atObjGlobal);
   resetSearchInput();
-  !atObjGlobal && requestJSON();
+  requestJSON();
 }
 
 // 开始执行函数
